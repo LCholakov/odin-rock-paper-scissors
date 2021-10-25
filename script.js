@@ -1,9 +1,12 @@
 // Rock = 1, Paper = 2, Scissors = 3
 
 // Declare consts for messages
-// const youWonMessage = "Y O U   W O N ! \n Congratulations, go grab a beer!"
-// const youLostMessage = "Y O U   L O S T ! \n Poor you, go cry in the corner..."
-// const youAreTied = "I T ' S   A   T I E ! \n Not bad, not bad..."
+const youWonMessage = "\n=== Y O U   W O N ! ===\n Congratulations, go grab a beer!"
+const youLostMessage = "\n=== Y O U   L O S T ! ===\n Poor you, go cry in the corner..."
+const youAreTiedMessage = "\n=== I T ' S   A   T I E ! ===\n Not bad, not bad..."
+
+let playerResult = 0
+let computerResult = 0
 
 game()
 console.log("Refresh the page to try again.")
@@ -19,7 +22,25 @@ function game() {
         console.log(playRound(playerSelection, computerSelection))
         console.log("--------------------------")
     }
+
+    console.log("--------------------------")
+    console.log(score())
 }
+
+// Display overall winner
+function score() {
+    let scoreTable = (`Y O U\t\tCOMPUTER\n  ${playerResult}\t\t   ${computerResult}\n`)
+    if (playerResult === computerResult) {
+        return scoreTable + youAreTiedMessage
+    }
+    else if (playerResult > computerResult) {
+        return scoreTable + youWonMessage
+    }
+    else {
+        return scoreTable + youLostMessage
+    }
+}
+
 
 // Computer Play. Returns a random number 1 - 3
 function computerPlay() {
@@ -34,16 +55,20 @@ function playRound(playerSelection, computerSelection) {
 
     if (isValidSelection(playerSelection)) {
         playerSelection = wordToInt(playerSelection)
-        console.log(`Bot chose ${intToWord(computerSelection)}`)
+        console.log(`Computer chose ${intToWord(computerSelection)}`)
         console.log(`You chose ${intToWord(playerSelection)}`)
 
         if (isTie(playerSelection, computerSelection)) {
+            playerResult++
+            computerResult++
             return (`You are tied! ${intToWord(playerSelection)} matches ${intToWord(computerSelection)}.`)
         }
         else if (playerWins(playerSelection, computerSelection)) {
+            playerResult += 2
             return `You win! ${intToWord(playerSelection)} beats ${intToWord(computerSelection)}.`
         }
         else {
+            computerResult += 2
             return `You lose! ${intToWord(computerSelection)} beats ${intToWord(playerSelection)}.`
         }
     }
