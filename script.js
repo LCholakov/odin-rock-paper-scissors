@@ -1,60 +1,61 @@
 // Rock = 1, Paper = 2, Scissors = 3
 
-// Declare variables for computer choice, player choice, player input
-let botRPS = null
-let playerRPS = null
-let playerInput = ""
-
 // Declare consts for messages
-const promptMessage = "The Bot already made up its mind. What do you choose? Rock, Paper or Scissors?"
-const youWonMessage = "Y O U   W O N ! \n Congratulations, go grab a beer!"
-const youLostMessage = "Y O U   L O S T ! \n Go cry in the corner..."
-const youTied = "I T ' S   A   T I E ! \n Not bad, not bad..."
+// const youWonMessage = "Y O U   W O N ! \n Congratulations, go grab a beer!"
+// const youLostMessage = "Y O U   L O S T ! \n Poor you, go cry in the corner..."
+// const youAreTied = "I T ' S   A   T I E ! \n Not bad, not bad..."
 
-// Store random choice in var
-botRPS = randomRPS()
+game()
+console.log("Refresh the page to try again.")
 
-// Ask user for input and store that in variable
-playerInput = prompt(promptMessage) 
-// Safety check
-if (playerInput !== null) {
-    playerInput = normalizeInput(playerInput)
+// FUNCTIONS //
+
+function game() {
+    for (let i = 1; i <= 5; ++i) {
+        const playerSelection = normalizeInput(prompt("What do you choose? Rock, Paper or Scissors?"))
+        const computerSelection = computerPlay()
+
+        console.log(`R O U N D   ${i}`)
+        console.log(playRound(playerSelection, computerSelection))
+        console.log("--------------------------")
+    }
+}
+
+// Computer Play. Returns a random number 1 - 3
+function computerPlay() {
+    return Math.floor(Math.random() * 3 + 1) // Random number between 1 and 3
 }
 
 // Verify input. 
 // If valid input -> compare with computer and display result.
 // If bad input message.
-if (isValidRPS(playerInput)) {
-    playerRPS = rpsToInt(playerInput)
-    console.log(`Bot chose ${intToRPS(botRPS)}`)
-    console.log(`You chose ${playerInput}`)
-    if (isTie()) {
-        console.log(youTied)
-    }
-    else if (playerWins()) {
-        console.log(youWonMessage)
+function playRound(playerSelection, computerSelection) {
+    // Input safety check
+
+    if (isValidSelection(playerSelection)) {
+        playerSelection = wordToInt(playerSelection)
+        console.log(`Bot chose ${intToWord(computerSelection)}`)
+        console.log(`You chose ${intToWord(playerSelection)}`)
+
+        if (isTie(playerSelection, computerSelection)) {
+            return (`You are tied! ${intToWord(playerSelection)} matches ${intToWord(computerSelection)}.`)
+        }
+        else if (playerWins(playerSelection, computerSelection)) {
+            return `You win! ${intToWord(playerSelection)} beats ${intToWord(computerSelection)}.`
+        }
+        else {
+            return `You lose! ${intToWord(computerSelection)} beats ${intToWord(playerSelection)}.`
+        }
     }
     else {
-        console.log(youLostMessage)
+        return ("I didn't understand that =/")
     }
 }
-else {
-    console.log("I didn't understand that =/")
-}
 
-console.log("Refresh the page to try again.")
-
-// FUNCTIONS //
-
-// Returns a random number 1 - 3
-function randomRPS () {
-    return Math.floor(Math.random() * 3 + 1) // Random number between 1 and 3
-}
-
-// Convert player input to integer
-function rpsToInt (string) {
+// Convert word to integer
+function wordToInt(string) {
     switch (string) {
-        case "rock": 
+        case "rock":
             return 1
             break
         case "paper":
@@ -63,57 +64,59 @@ function rpsToInt (string) {
         case "scissors":
             return 3
             break
-        default: 
+        default:
             return null // something went wrong
     }
 }
 
-function intToRPS (number) {
+// Convert integer to word
+function intToWord(number) {
     switch (number) {
-        case 1: 
-            return "rock"
+        case 1:
+            return "Rock"
             break
         case 2:
-            return "paper"
+            return "Paper"
             break
         case 3:
-            return "scissors"
+            return "Scissors"
             break
-        default: 
+        default:
             return null // something went wrong
     }
 }
 
 // Normalize player input (convert to lowercase and remove spaces)
-function normalizeInput (string) {
-    return string.replace(/\s+/g, '').toLowerCase()
+function normalizeInput(string) {
+    if (string !== null)
+        return string.replace(/\s+/g, '').toLowerCase()
 }
 
 // Verify user input and return bool
-function isValidRPS (string) {
+function isValidSelection(string) {
     switch (string) {
         case "rock":
         case "paper":
         case "scissors":
             return true
             break
-        default: 
+        default:
             return false
     }
 }
 
-// Return true if it's a tied score (use the global variables, kinda shit)
-function isTie () {
-    return playerRPS === botRPS
+// Return true if it's a tied score
+function isTie(playerSelection, computerSelection) {
+    return playerSelection === computerSelection
 }
 
-// Return true if player wins (use grobal variables, kinda shit)
-function playerWins () {
-    if (playerRPS === 3 && botRPS === 1) {
+// Return true if player wins
+function playerWins(playerSelection, computerSelection) {
+    if (playerSelection === 1 && computerSelection === 3) {
         return true
     }
-    else if (playerRPS === 1 && botRPS === 3) {
+    else if (playerSelection === 3 && computerSelection === 1) {
         return false
     }
-    else return (playerRPS > botRPS)
+    else return (playerSelection > computerSelection)
 }
