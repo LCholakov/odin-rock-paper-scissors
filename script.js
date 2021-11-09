@@ -55,9 +55,10 @@ function playRound(playerSelection, computerSelection) {
     document.querySelector('.playerScore').innerText = playerScore + 'p';
 
     // Reset before fade effect
-    scoreText.style.display = 'block';
-    scoreText.style.opacity = 1;
-    setTimeout(function(){ fade(scoreText); }, 1500);
+    // clearInterval
+    // scoreText.style.display = 'block';
+    // scoreText.style.opacity = 1;
+    // setTimeout(function(){ fade(scoreText); }, 1500);
 }
 
 // Capitalize first letter
