@@ -8,10 +8,12 @@ const youAreTiedMessage = "\n=== I T ' S   A   T I E ! ===\n Not bad, not bad...
 let playerScore = 0;
 let computerScore = 0;
 
+randomizeComp();
+
 const buttons = document.querySelectorAll('.playerBtn');
 buttons.forEach(playerBtn =>
     playerBtn.addEventListener('click',
-        function () { playRound(playerBtn.getAttribute('data-index'), computerPlay()) }));
+        function () { playRound(playerBtn.getAttribute('data-selection'), computerPlay()) }));
 
 // console.log("Refresh the page to try again.");
 
@@ -31,8 +33,11 @@ function game() {
 
 // Play one round
 function playRound(playerSelection, computerSelection) {
-    console.log(`Computer chose ${computerSelection}`);
-    console.log(`You chose ${playerSelection}`);
+    buttons.forEach(playerBtn => playerBtn.classList.remove('selected'));
+    const button = document.querySelector(`.playerBtn[data-selection="${playerSelection}"]`);
+    button.classList.add('selected');
+    document.querySelector('.compSelectionImg').src=`img/${computerSelection}.png`
+
     const scoreText = document.querySelector('#roundScore');
 
     if (isTie(playerSelection, computerSelection)) {
@@ -43,16 +48,18 @@ function playRound(playerSelection, computerSelection) {
     }
     else if (playerWins(playerSelection, computerSelection)) {
         playerScore += 2;
-        let verb = playerSelection === 'scissors' ? 'beat' : 'beats'; // This is an ugly hack for plural
+        let verb = (playerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou win!`;
     }
     else {
         computerScore += 2;
-        let verb = computerSelection === 'scissors' ? 'beat' : 'beats'; // This is an ugly hack for plural
+        let verb = (computerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(computerSelection)} ${verb} ${playerSelection}.\nYou lose!`;
     }
     document.querySelector('.computerScore').innerText = computerScore + 'p';
     document.querySelector('.playerScore').innerText = playerScore + 'p';
+
+
 
     // Reset before fade effect
     // clearInterval
@@ -62,14 +69,14 @@ function playRound(playerSelection, computerSelection) {
 }
 
 // Capitalize first letter
-function capitalize (str) {
-    return str.slice(0,1).toUpperCase() + str.slice (1);
+function capitalize(str) {
+    return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
 
 // Computer Play. Returns a random rps word
 function computerPlay() {
     switch (Math.floor(Math.random() * 3 + 1)) {
-        case 1: 
+        case 1:
             return 'rock';
             break;
         case 2:
@@ -119,7 +126,7 @@ function score() {
 function fade(element) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
-        if (op <= 0.3){
+        if (op <= 0.3) {
             clearInterval(timer);
             // element.style.display = 'none';
         }
@@ -127,4 +134,10 @@ function fade(element) {
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op -= op * 0.01;
     }, 20);
+}
+
+// Randomize images 
+function randomizeComp() {
+    const images = document.querySelectorAll('.randomImg');
+    setInterval(function () { images.forEach(randomImg => randomImg.src=`img/${computerPlay()}.png`) }, 300);
 }
