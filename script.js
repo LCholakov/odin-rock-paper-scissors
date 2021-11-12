@@ -33,11 +33,12 @@ function game() {
 
 // Play one round
 function playRound(playerSelection, computerSelection) {
+    showCompSelection(computerSelection);
+
     buttons.forEach(playerBtn => playerBtn.classList.remove('selected'));
     const button = document.querySelector(`.playerBtn[data-selection="${playerSelection}"]`);
     button.classList.add('selected');
 
-    showCompSelection(computerSelection);
 
     displayResult(playerSelection, computerSelection);
 }
