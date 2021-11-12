@@ -36,8 +36,27 @@ function playRound(playerSelection, computerSelection) {
     buttons.forEach(playerBtn => playerBtn.classList.remove('selected'));
     const button = document.querySelector(`.playerBtn[data-selection="${playerSelection}"]`);
     button.classList.add('selected');
-    document.querySelector('.compSelectionImg').src=`img/${computerSelection}.png`
 
+    showCompSelection(computerSelection);
+
+    displayResult(playerSelection, computerSelection);
+}
+
+// Show computer selection image
+function showCompSelection(computerSelection) {
+    let compSelection = document.querySelector('.compSelection');
+    compSelection.firstChild.src = `img/${computerSelection}.png`;
+    compSelection.style.setProperty('transform', 'scale(0.8)');
+    compSelection.style.setProperty('filter', 'brightness(50%)');
+    setTimeout(function () {
+        compSelection.style.setProperty('filter', 'brightness(100%)');
+        compSelection.style.setProperty('transform', 'scale(1.1)');
+    },
+        100);
+}
+
+// Display result text
+function displayResult(playerSelection, computerSelection) {
     const scoreText = document.querySelector('#roundScore');
 
     if (isTie(playerSelection, computerSelection)) {
@@ -45,27 +64,26 @@ function playRound(playerSelection, computerSelection) {
         computerScore++;
         let verb = playerSelection === 'scissors' ? 'match' : 'matches'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou are tied!`;
+        scoreText.style.setProperty('color', 'indigo');
     }
     else if (playerWins(playerSelection, computerSelection)) {
         playerScore += 2;
         let verb = (playerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou win!`;
+        scoreText.style.setProperty('color', 'lawngreen');
     }
     else {
         computerScore += 2;
         let verb = (computerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(computerSelection)} ${verb} ${playerSelection}.\nYou lose!`;
+        scoreText.style.setProperty('color', 'orangered');
     }
+
+    scoreText.classList.add('roundScoreAnimation');
+    setTimeout(function () { scoreText.classList.remove('roundScoreAnimation'); }, 200)
+
     document.querySelector('.computerScore').innerText = computerScore + 'p';
     document.querySelector('.playerScore').innerText = playerScore + 'p';
-
-
-
-    // Reset before fade effect
-    // clearInterval
-    // scoreText.style.display = 'block';
-    // scoreText.style.opacity = 1;
-    // setTimeout(function(){ fade(scoreText); }, 1500);
 }
 
 // Capitalize first letter
@@ -122,22 +140,8 @@ function score() {
     }
 }
 
-// Fade out
-function fade(element) {
-    var op = 1;  // initial opacity
-    var timer = setInterval(function () {
-        if (op <= 0.3) {
-            clearInterval(timer);
-            // element.style.display = 'none';
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op -= op * 0.01;
-    }, 20);
-}
-
 // Randomize images 
 function randomizeComp() {
     const images = document.querySelectorAll('.randomImg');
-    setInterval(function () { images.forEach(randomImg => randomImg.src=`img/${computerPlay()}.png`) }, 300);
+    setInterval(function () { images.forEach(randomImg => randomImg.src = `img/${computerPlay()}.png`) }, 300);
 }
