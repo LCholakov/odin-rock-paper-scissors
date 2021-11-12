@@ -50,7 +50,7 @@ function showCompSelection(computerSelection) {
     compSelection.style.setProperty('filter', 'brightness(50%)');
     setTimeout(function () {
         compSelection.style.setProperty('filter', 'brightness(100%)');
-        compSelection.style.setProperty('transform', 'scale(1.1)');
+        compSelection.style.setProperty('transform', 'scale(1.15)');
     },
         100);
 }
