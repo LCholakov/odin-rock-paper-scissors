@@ -1,12 +1,16 @@
 // Rock = 1, Paper = 2, Scissors = 3
 
 // Declare consts for messages
-const youWonMessage = "\n=== Y O U   W O N ! ===\n Congratulations, go grab a beer!";
-const youLostMessage = "\n=== Y O U   L O S T ! ===\n Poor you, go cry in the corner...";
-const youAreTiedMessage = "\n=== I T ' S   A   T I E ! ===\n Not bad, not bad..."
+const youWonMessage = "=== YOU WIN! ===\nCongratulations, you're the master of luck!";
+const youLostMessage = "=== YOU LOSE! ===\nTime for revenge!";
+const youAreTiedMessage = "=== IT'S A TIE! ===\nNot bad, not bad at all."
 
 let playerScore = 0;
 let computerScore = 0;
+let comboWinMultiplier = 1;
+let previousWinner = -1; // -1 = no winner, 0 = computer, 1 = human
+
+let finalScore = 5000;
 
 randomizeComp();
 
@@ -19,18 +23,6 @@ buttons.forEach(playerBtn =>
 
 // FUNCTIONS //
 
-function game() {
-    const playerSelection = normalizeInput(prompt("What do you choose? Rock, Paper or Scissors?"));
-    const computerSelection = computerPlay();
-
-    console.log(`R O U N D   ${i}`);
-    console.log(playRound(playerSelection, computerSelection));
-    console.log("--------------------------");
-
-    console.log("--------------------------");
-    console.log(score());
-}
-
 // Play one round
 function playRound(playerSelection, computerSelection) {
     showCompSelection(computerSelection);
@@ -40,7 +32,10 @@ function playRound(playerSelection, computerSelection) {
     button.classList.add('selected');
 
 
-    displayResult(playerSelection, computerSelection);
+    displayRoundScore(playerSelection, computerSelection);
+
+
+    checkEndGame();
 }
 
 // Show computer selection image
@@ -56,28 +51,51 @@ function showCompSelection(computerSelection) {
         100);
 }
 
-// Display result text
-function displayResult(playerSelection, computerSelection) {
-    const scoreText = document.querySelector('#roundScore');
+// One round score text - display, color, animate
+function displayRoundScore(playerSelection, computerSelection) {
+    const scoreText = document.querySelector('.roundScore');
+    const computerPoints = document.querySelector('.computerScore');
+    const playerPoints = document.querySelector('.playerScore');
 
     if (isTie(playerSelection, computerSelection)) {
-        playerScore++;
-        computerScore++;
+        resetCombo();
+
+        playerScore += 100;
+        computerScore += 100;
         let verb = playerSelection === 'scissors' ? 'match' : 'matches'; // This is an ugly hack for plural
         scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou are tied!`;
         scoreText.style.setProperty('color', 'indigo');
+
+        computerPoints.classList.add('pointsAnimation');
+        setTimeout(function () { computerPoints.classList.remove('pointsAnimation'); }, 200);
+        playerPoints.classList.add('pointsAnimation');
+        setTimeout(function () { playerPoints.classList.remove('pointsAnimation'); }, 200);
     }
     else if (playerWins(playerSelection, computerSelection)) {
-        playerScore += 2;
+        showHumanCombo();
+
+        playerScore += 200 * comboWinMultiplier;
         let verb = (playerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
-        scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou win!`;
-        scoreText.style.setProperty('color', 'lawngreen');
+        scoreText.innerText = `${capitalize(playerSelection)} ${verb} ${computerSelection}.\nYou score!`;
+        scoreText.style.setProperty('color', 'aqua');
+        playerPoints.classList.add('pointsAnimation');
+        playerPoints.style.setProperty('color', 'aqua');
+        setTimeout(function () { playerPoints.classList.remove('pointsAnimation'); 
+                                    playerPoints.style.setProperty('color', 'black'); }, 
+                                    200);
+        previousWinner = 1;
     }
     else {
-        computerScore += 2;
+        showComputerCombo();
+        computerScore += 200 * comboWinMultiplier;
         let verb = (computerSelection === 'scissors') ? 'beat' : 'beats'; // This is an ugly hack for plural
-        scoreText.innerText = `${capitalize(computerSelection)} ${verb} ${playerSelection}.\nYou lose!`;
-        scoreText.style.setProperty('color', 'orangered');
+        scoreText.innerText = `${capitalize(computerSelection)} ${verb} ${playerSelection}.\nComputer scores!`;
+        scoreText.style.setProperty('color', 'red');
+        computerPoints.classList.add('pointsAnimation');
+        computerPoints.style.setProperty('color', 'aqua');
+        setTimeout(function () { computerPoints.classList.remove('pointsAnimation'); 
+                                    computerPoints.style.setProperty('color', 'black');}, 
+                                    200);
     }
 
     scoreText.classList.add('roundScoreAnimation');
@@ -87,9 +105,66 @@ function displayResult(playerSelection, computerSelection) {
     document.querySelector('.playerScore').innerText = playerScore + 'p';
 }
 
+// Check if max points is reached and display text accordingly
+function checkEndGame () {
+    const gameScoreText = document.querySelector('.game-score');
+
+    if (computerScore >= finalScore && playerScore >= finalScore && computerScore === playerScore) {
+        gameScoreText.innerText = youAreTiedMessage;
+        toggleModal();
+    }    
+    else if (computerScore >= finalScore) {
+        gameScoreText.innerText = youLostMessage;
+        toggleModal();
+    }
+    else if (playerScore >= finalScore) {
+        gameScoreText.innerText = youWonMessage;
+        toggleModal();
+    }
+}
+
 // Capitalize first letter
 function capitalize(str) {
     return str.slice(0, 1).toUpperCase() + str.slice(1);
+}
+
+// Reset vars and text keeping track of winning streak
+function resetCombo() {
+    previousWinner = -1;
+    comboWinMultiplier = 1;
+
+    const computerCombo = document.querySelector('.computer-combo');
+    const humanCombo = document.querySelector('.human-combo');
+    computerCombo.innerText = "";
+    humanCombo.innerText = "";    
+}
+
+// Display text and reevaluate vars keeping track of a winning streak for human player
+function showHumanCombo() {
+    if(previousWinner !== 1)
+    {
+        previousWinner = 1;
+        const computerCombo = document.querySelector('.computer-combo');
+        computerCombo.innerText =  '';
+        return;
+    }
+    comboWinMultiplier += 1;
+    const humanCombo = document.querySelector('.human-combo');
+    humanCombo.innerText =  `x${comboWinMultiplier} COMBO!`;
+}
+
+// Display text and reevaluate vars keeping track of a winning streak for computer player
+function showComputerCombo() {
+    if(previousWinner !== 0)
+    {
+        previousWinner = 0;
+        const humanCombo = document.querySelector('.human-combo');
+        humanCombo.innerText =  '';
+        return;
+    }
+    comboWinMultiplier += 1;
+    const computerCombo = document.querySelector('.computer-combo');
+    computerCombo.innerText =  `x${comboWinMultiplier} COMBO!`;
 }
 
 // Computer Play. Returns a random rps word
@@ -127,22 +202,35 @@ function playerWins(playerSelection, computerSelection) {
     else return false;
 }
 
-// Display overall winner
-function score() {
-    let scoreTable = (`Y O U\t\tCOMPUTER\n  ${playerScore}\t\t   ${computerScore}\n`);
-    if (playerScore === computerScore) {
-        return scoreTable + youAreTiedMessage;
-    }
-    else if (playerScore > computerScore) {
-        return scoreTable + youWonMessage;
-    }
-    else {
-        return scoreTable + youLostMessage;
-    }
-}
-
 // Randomize images 
 function randomizeComp() {
     const images = document.querySelectorAll('.randomImg');
     setInterval(function () { images.forEach(randomImg => randomImg.src = `img/${computerPlay()}.png`) }, 300);
 }
+
+// modal popup and game reset
+const modal = document.querySelector(".modal");
+const tryAgainBtn = document.querySelector('.tryAgainBtn');
+const continuePlayBtn = document.querySelector('.continuePlayBtn');
+
+function toggleModal() {
+    modal.classList.toggle("show-modal");
+    continuePlayBtn.innerText = `Test your luck\nto ${finalScore * 2}...`
+}
+
+function tryAgain () {
+    toggleModal();
+    computerScore = 0;
+    playerScore = 0;
+}
+
+function continuePlay () {
+    toggleModal();
+    finalScore *= 2;
+}
+
+tryAgainBtn.addEventListener('click', tryAgain);
+continuePlayBtn.addEventListener('click', continuePlay);
+
+
+

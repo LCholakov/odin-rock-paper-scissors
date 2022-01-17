@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap&effect=anaglyph');
 @import url('https://fonts.googleapis.com/css2?family=Ceviche+One&family=New+Rocker&family=Pacifico&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Play:wght@400;700&display=swap&effect=anaglyph');
+@import url('https://fonts.googleapis.com/css?family=Play:wght@400;700&display=swap&effect=anaglyph|emboss|fire|fire-animation|outline|neon|shadow-multiple|3d|3d-float|vintage|wallpaper');
 
 body { font-family: Play, sans-serif; background: ivory;}
 
@@ -27,10 +27,17 @@ span.s { font-family: 'Ceviche One'; }
     justify-content: space-between;
 }
 
+.combo-win-message {
+    font-size: 12px;
+    color: grey;
+    transform: rotate(45deg) translate(-20px,0px);
+    display: inline-block;
+}
+
 .compSelection {
     width: 75px;
     height: 75px;
-    z-index: 90;
+    z-index: 40;
     border-radius: 50%;
     box-shadow: 0 0 1rem #3d3d3d;
     transition: all .1s ease;
@@ -44,7 +51,7 @@ img {
     box-shadow: 0 0 1rem #d1d1d1;
 }
 
-button {
+.playerBtn {
     background: none;
     border-radius: 50%;
     filter: grayscale(50%);
@@ -53,18 +60,18 @@ button {
     transition: all .1s ease;
 }
 
-button:hover {
+.playerBtn:hover {
     filter: grayscale(0%);
     box-shadow: 0 0 1rem #3d3d3d;
 }
 
-button:active {
+.playerBtn:active {
     transform: scale(.95);
 }
 
 .selected {
     transform: scale(1.15);
-    z-index: 90;
+    z-index: 40;
 }
 
 .randomImg {
@@ -75,16 +82,6 @@ button:active {
     flex: 1;
 }
 
-#roundScore {
-    flex: 1;
-    transition: all 0.5s ease;
-    z-index: 100;
-}
-
-.roundScoreAnimation {
-    transform: scale(3);
-}
-
 .score {
     display: flex;
     justify-content: space-between;
@@ -93,12 +90,15 @@ button:active {
     padding: 15px;
 }
 
-.computerScore, 
-.playerScore {
-    font-weight: bold;
+.roundScore {
+    flex: 1;
+    transition: all 0.5s ease;
+    z-index: 50;
 }
 
-
+.roundScoreAnimation {
+    transform: scale(3);
+}
 
 .total {
     display: flex;
@@ -107,4 +107,77 @@ button:active {
     justify-content: space-around;
     background-color: rgb(241, 241, 191);
     border-radius: 5px;
+}
+
+.computerScore, 
+.playerScore {
+    font-weight: bold;
+    transition: all 0.5s ease;
+}
+
+.pointsAnimation {
+    transform: scale(2);
+}
+
+/* Show winner modal popup */
+	
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: ivory;
+    border: 1px rebeccapurple solid;
+    padding: 1rem 1.5rem;
+    width: 24rem;
+    border-radius: 0.5rem;
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.game-score {
+    color: rebeccapurple;
+}
+
+.game-end-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+.game-end-buttons>button {
+    background: transparent;
+    border-radius: 5px;
+    border: 1px rebeccapurple solid;
+    color: rebeccapurple;
+    flex: 1;
+    transition: all .1s ease;
+}
+.game-end-buttons>button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 1rem #d1d1d1;
+}
+.game-end-buttons>button:active {
+    box-shadow: 0 0 1rem #91f191;
+    background: #91f191;
 }

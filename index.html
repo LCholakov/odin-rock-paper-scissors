@@ -15,22 +15,27 @@
 
 	<div class='content'>
 		<div class='player computer'>
-			<h3 class='label font-effect-anaglyph'>Computer</h3>
+			<h3 class='label font-effect-anaglyph'>Computer
+				<span class='combo-win-message computer-combo'></span>
+			</h3>
 			<div><img class='randomImg'></div>
-			<div class='compSelection'><img class='compSelectionImg'src=''></div>
+			<div class='compSelection'><img class='compSelectionImg' src=''></div>
 			<div><img class='randomImg'></div>
 		</div>
 
 		<div class='score'>
 			<p class='label font-effect-anaglyph'>Score</p>
-			<p id='roundScore' class='font-effect-anaglyph'>Show me what you got!</p>
+			<p class='roundScore font-effect-anaglyph'>Show me what you got!</p>
 		</div>
 
 		<div class='player human'>
-			<h3 class='label font-effect-anaglyph'>You</h3>
+			<h3 class='label font-effect-anaglyph'>You
+				<span class='combo-win-message human-combo'></span>
+			</h3>
 			<button class='playerBtn' data-selection='rock'><img src='img/rock.png' alt='rock hand image'></button>
 			<button class='playerBtn' data-selection='paper'><img src='img/paper.png' alt='paper image'></button>
-			<button class='playerBtn' data-selection='scissors'><img src='img/scissors.png' alt='scissors image'></button>
+			<button class='playerBtn' data-selection='scissors'><img src='img/scissors.png'
+					alt='scissors image'></button>
 		</div>
 	</div>
 	<div class='total'>
@@ -38,10 +43,19 @@
 		<p class='playerScore font-effect-anaglyph'>0p</p>
 	</div>
 
-	<!--
-		
+	<div class="modal">
+		<div class="modal-content">
+			<!-- <span class="close-button">&times;</span> -->
+			<h1 class='game-score font-effect-3d-float'></h1>
+			<div class='game-end-buttons'>
+				<button class="tryAgainBtn font-effect-anaglyph">Start again<br>from zero...</button>
+				<button class="continuePlayBtn font-effect-anaglyph">Test your luck<br>to 10000...</button>
+			</div>
+		</div>
+	</div>
+
+	<!--		
 		rps image attribution <a href='https://www.vecteezy.com/free-vector/cartoon'>Cartoon Vectors by Vecteezy</a> 
-	
 	-->
 </body>
 
